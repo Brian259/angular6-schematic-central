@@ -1,0 +1,21 @@
+<a
+  style="cursor: pointer;"
+  [routerLink]="[index]"
+  routerLinkActive="active"
+  class="list-group-item list-group-item-action flex-column align-items-start clearfix">
+  <div class="d-flex w-100 justify-content-between">
+    <div>
+      <h5 class="list-group-item-heading">{{ schematic.name | shorten:20}}</h5>
+      <p class="list-group-item-text mr-5">{{ schematic.description }}</p>
+    </div>
+      <div>
+        <img
+        [src]="imgURL"
+        alt="{{ schematic.name }}"
+        class="img-responsive rounded"
+        style="max-height: 70px;">
+        
+      </div>
+  </div>
+  </a>
+  

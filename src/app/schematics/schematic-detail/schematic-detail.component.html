@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col">
+    <img
+      [src]="imgURL"
+      alt="{{ schematic.name }}"
+      class="img-responsive"
+      style="max-height: 300px;">
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <h1>{{ schematic.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <div ngbDropdown class="d-inline-block">
+      <button class="btn btn-primary" id="dropdownBasic1" ngbDropdownToggle>Manage Recipe</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <button class="dropdown-item" (click)="onAddToSL()">To Shopping List</button>
+        <button class="dropdown-item" routerLink="edit">Edit Recipe</button>
+        <button class="dropdown-item" (click)="onDeleteSchematic()">Delete Recipe</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    {{ schematic.description }}
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        *ngFor="let elecComp of schematic.electronicComponents">
+        {{ elecComp.name }} - {{ elecComp.amount }}
+      </li>
+    </ul>
+  </div>
+</div>

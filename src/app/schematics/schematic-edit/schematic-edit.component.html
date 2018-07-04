@@ -1,0 +1,78 @@
+<div class="row">
+  <div class="col">
+    <form [formGroup]="schematicForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col">
+          <button type="submit" class="btn btn-success" [disabled]="!schematicForm.valid">Save</button>
+          <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" formControlName="name" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="img">Image</label>
+          <div class="dropzone justify-content-between" appDropZone (hovered)="toggleHover($event)" (dropped)="onImageDrop($event)"
+            [class.hovering]="isHovering">
+            <h4>Drag and Drop Image Here</h4>
+            <div class="file">
+              <label class="file-label">
+                <input class="file-input" type="file" (change)="onImageDrop($event.target.files[0])">
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fa fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    or choose a file…
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="(imgShown | async) as img">
+        <div class="col">
+          <label>Preview   </label>
+          <img [src]="img" class="img-responsive">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea type="text" id="description" class="form-control" formControlName="description" rows="6"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" formArrayName="elecComps">
+          <div class="row" *ngFor="let elecCompCtrl of schematicForm.get('elecComps').controls; let i = index" [formGroupName]="i"
+            style="margin-top: 10px;">
+            <div class="col-xs-8">
+              <input type="text" class="form-control" formControlName="name">
+            </div>
+            <div class="col-xs-2">
+              <input type="number" class="form-control" formControlName="amount">
+            </div>
+            <div class="col-xs-2">
+              <button type="button" class="btn btn-danger" (click)="onDeleteElectronicComponent(i)">X</button>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col">
+              <button type="button" class="btn btn-success" (click)="onAddElectronicComponent()">Add ElectronicComponent</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
