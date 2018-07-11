@@ -1,6 +1,4 @@
-import { DataStorageService } from './../shared/data-storage.service';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
 
 import { Schematic } from './schematic.model';
 import { ElectronicComponent } from '../shared/electronic-comp.model';
@@ -57,7 +55,6 @@ export class SchematicService {
 
   addSchematic(schematic: Schematic) {
     this.schematics.push(schematic);
-    console.log(schematic.imgFile);
     this.schematicsChanged.next(this.schematics.slice());
   }
 

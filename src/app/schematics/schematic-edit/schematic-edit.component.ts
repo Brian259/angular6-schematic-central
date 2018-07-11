@@ -87,7 +87,7 @@ export class SchematicEditComponent implements OnInit, OnDestroy {
         null,
         this.imgFile
       );
-      console.log(newSchematic.imgFile);
+
       this.schematicService.addSchematic(newSchematic);
     }
     this.onCancel();

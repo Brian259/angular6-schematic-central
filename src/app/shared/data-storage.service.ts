@@ -1,7 +1,7 @@
 import { ElectronicComponent } from './electronic-comp.model';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
-import { map, take, tap, switchMap } from 'rxjs/operators';
+import { map, take, tap, switchMap, finalize } from 'rxjs/operators';
 
 import { SchematicService } from '../schematics/schematic.service';
 import { Schematic } from '../schematics/schematic.model';
@@ -10,7 +10,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { Observable, pipe } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
 
-interface FireSchems {
+interface FireSchem {
   name: string;
   description: string;
   imgURL: string;
@@ -19,7 +19,7 @@ interface FireSchems {
 
 @Injectable()
 export class DataStorageService {
-  schematicsCollection: AngularFirestoreCollection<FireSchems>;
+  schematicsCollection: AngularFirestoreCollection<FireSchem>;
   schematics$: Observable<Schematic[]>;
   
 
@@ -51,7 +51,6 @@ export class DataStorageService {
 
   storeSchematics() { // Saves changes to Firestore and Firebase Storage
     this.schematicService.getSchematics().forEach((schem: Schematic, key: number) => {
-
       if (schem.id) {
         const _schemDoc: AngularFirestoreDocument<Schematic> = this.afs.doc('schematics/' + schem.id);
         this.fireStorage.ref('images/' + this.getFireLocation(schem.imgURL));
@@ -75,10 +74,10 @@ export class DataStorageService {
               schem.electronicComponents,
               docRef.id,
             ));
+            this.startUpload(schem.imgFile, docRef.id);
           });
-          this.startUpload(schem.imgFile, schem.id);
         }
-        console.log(schem.imgFile);
+        // console.log(schem.imgFile);
     });
     if (this.schematicService.getSchemsToDelete()) {
       this.schematicService.getSchemsToDelete().forEach((schem: Schematic) => this.deleteStoreSchem(schem));
@@ -97,28 +96,28 @@ export class DataStorageService {
   }
 
   startUpload(file: File, id: string) { // Adds a new image to the storage
-    let imgUploadTask: AngularFireUploadTask;
     const path = `images/${new Date().getTime()}_${file.name}`;
-    // The main task
+    const fileRef = this.fireStorage.ref(path);
+    let imgUploadTask: AngularFireUploadTask;
     imgUploadTask = this.fireStorage.upload(path, file);
-    const snapshot = imgUploadTask.snapshotChanges().pipe(
-      tap(snap => {
-        if (snap.bytesTransferred === snap.totalBytes) {
-          // Update firestore and local on completion
-          this.fireStorage.ref(path).getDownloadURL().subscribe(url => {
+    imgUploadTask.snapshotChanges().pipe(
+      finalize(() => {
+        let url: string;
+        fileRef.getDownloadURL().subscribe(
+          (downloadUrl) => {
+            const _schemDoc: AngularFirestoreDocument<FireSchem> = this.afs.doc('schematics/' + id);
+            url = downloadUrl;
             console.log(url);
-            
-            const _schemDoc: AngularFirestoreDocument<Schematic> = this.afs.doc('schematics/' + id);
             _schemDoc.update( {imgURL: url} );
-          });
-        }
+          }
+        );
       })
-    )
+    ).subscribe();
   }
 
   deleteStoreSchem(schem: Schematic) { // Deletes a schematic, both Firestore data and Firebase Storage image
     this.deleteImg(schem.imgURL);
-    const _schemDoc: AngularFirestoreDocument<Schematic> = this.afs.doc('schematics/' + schem.id);
+    const _schemDoc: AngularFirestoreDocument<FireSchem> = this.afs.doc('schematics/' + schem.id);
     _schemDoc.delete();
   }
 
