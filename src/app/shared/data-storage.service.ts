@@ -1,13 +1,11 @@
 import { ElectronicComponent } from './electronic-comp.model';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
-import { map, take, tap, switchMap, finalize } from 'rxjs/operators';
+import { map, take, finalize } from 'rxjs/operators';
 
 import { SchematicService } from '../schematics/schematic.service';
 import { Schematic } from '../schematics/schematic.model';
-import { AuthService } from '../auth/auth.service';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { Observable, pipe } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
 
 interface FireSchem {
@@ -24,9 +22,7 @@ export class DataStorageService {
   
 
   constructor(
-    private httpClient: HttpClient,
     private schematicService: SchematicService,
-    private authService: AuthService,
     private afs: AngularFirestore,
     private fireStorage: AngularFireStorage
   ) { }
@@ -73,14 +69,19 @@ export class DataStorageService {
               '',
               schem.electronicComponents,
               docRef.id,
+              schem.imgFile
             ));
             this.startUpload(schem.imgFile, docRef.id);
           });
         }
-        // console.log(schem.imgFile);
     });
     if (this.schematicService.getSchemsToDelete()) {
       this.schematicService.getSchemsToDelete().forEach((schem: Schematic) => this.deleteStoreSchem(schem));
+    }
+    if (this.schematicService.getImgsToDelete()) {
+      this.schematicService.getImgsToDelete().forEach((img: string) => {
+        this.deleteImg(img);
+      });
     }
   }
 

@@ -12,6 +12,7 @@ import { SchematicListComponent } from './schematic-list/schematic-list.componen
 import { SchematicEditComponent } from './schematic-edit/schematic-edit.component';
 import { SchematicDetailComponent } from './schematic-detail/schematic-detail.component';
 import { SchematicItemComponent } from './schematic-list/schematic-item/schematic-item.component';
+import { ImageDropzoneComponent } from './schematic-edit/image-dropzone/image-dropzone.component';
 import { ShortenPipe } from '../shared/shorten.pipe';
 import { FilterPipe } from '../shared/filter.pipe';
 
@@ -23,6 +24,7 @@ import { FilterPipe } from '../shared/filter.pipe';
     SchematicEditComponent,
     SchematicDetailComponent,
     SchematicItemComponent,
+    ImageDropzoneComponent,
     ShortenPipe,
     FilterPipe
   ],

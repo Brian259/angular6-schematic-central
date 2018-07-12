@@ -1,6 +1,5 @@
-import { DataStorageService } from './../../shared/data-storage.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Schematic } from '../schematic.model';
 import { SchematicService } from '../schematic.service';
@@ -18,15 +17,23 @@ export class SchematicDetailComponent implements OnInit {
   constructor(
     private schematicService: SchematicService,
     private route: ActivatedRoute,
-    private router: Router,
-    private storage: DataStorageService
-  ) {
-  }
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.route.data.subscribe((data: { schematic: Schematic }) => { // Retrive data from resolver and set image
       this.schematic = data.schematic;
-      this.imgURL = this.schematic.imgFile ? this.schematic.imgFile : this.schematic.imgURL;
+      if (this.schematic.imgFile) {
+        const reader = new FileReader();
+        let src: string;
+        reader.onloadend = () => {
+          src = reader.result;
+          this.imgURL = src;
+        };
+        reader.readAsDataURL(this.schematic.imgFile);
+      } else {
+        this.imgURL = this.schematic.imgURL;
+      }
       }
     );
   }

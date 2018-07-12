@@ -4,7 +4,6 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { Schematic } from '../../schematic.model';
 
-
 @Component({
   selector: 'app-schematic-item',
   templateUrl: './schematic-item.component.html',
@@ -19,12 +18,14 @@ export class SchematicItemComponent implements OnInit {
     private storage: DataStorageService
   ) {}
   ngOnInit() {
-    this.imgURL = this.schematic.imgFile ? this.schematic.imgFile : this.schematic.imgURL;
     if (this.schematic.imgFile) {
-      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        this.imgURL = reader.result;
+      };
+      reader.readAsDataURL(this.schematic.imgFile);
     } else {
-
+      this.imgURL = this.schematic.imgURL;
     }
   }
-  
 }

@@ -11,6 +11,7 @@ export class SchematicService {
   private schematics: Schematic[] = null;
   schematicsChanged = new BehaviorSubject<Schematic[]>(this.schematics);
   SchemsToDelete: Schematic[];
+  imgsToDelete: string[];
 
   constructor(
     private slService: ShoppingListService
@@ -37,7 +38,7 @@ export class SchematicService {
         } catch {
           return null;
         }
-      } )
+      })
     );
   }
 
@@ -63,9 +64,13 @@ export class SchematicService {
     this.schematicsChanged.next(this.schematics.slice());
   }
 
+  addImgToDelete(index: number) {
+    this.imgsToDelete.push(this.schematics[index].imgURL);
+  }
+
   deleteSchematic(index: number) {
     const imgUrlToDel = this.getSchematic(index).imgURL;
-    if (imgUrlToDel){
+    if (imgUrlToDel) {
       this.SchemsToDelete.push(this.schematics[index]);
     }
     this.schematics.splice(index, 1);
@@ -74,5 +79,9 @@ export class SchematicService {
 
   getSchemsToDelete() {
     return this.SchemsToDelete;
+  }
+
+  getImgsToDelete() {
+    return this.imgsToDelete;
   }
 }

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Schematic } from '../schematic.model';
 import { SchematicService } from '../schematic.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-schematic-list',
@@ -17,7 +18,8 @@ export class SchematicListComponent implements OnInit, OnDestroy {
 
   constructor(private schematicService: SchematicService,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private authService: AuthService) {
   }
 
   ngOnInit() {

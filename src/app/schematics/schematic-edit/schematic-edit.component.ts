@@ -13,15 +13,13 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./schematic-edit.component.css']
 })
 export class SchematicEditComponent implements OnInit, OnDestroy {
-  editMode     = false;
-  imgLoaded    = false;
-  isHovering   = false;
-  imgSelected  = new Subject<string>();
-  id:            number;
+  editMode = false;
+  imgSelected = new Subject<string>();
+  id: number;
   schematicForm: FormGroup;
-  subscription:  Subscription;
-  imgShown:      Observable<string>;
-  imgFile:       File;
+  subscription: Subscription;
+  imgShown: Observable<string>;
+  imgFile: File;
 
   constructor(private route: ActivatedRoute,
     private schematicService: SchematicService,
@@ -37,7 +35,18 @@ export class SchematicEditComponent implements OnInit, OnDestroy {
           this.initForm();
         }
       );
-    this.subscription = this.imgSelected.subscribe((file) => { this.imgLoaded = true; });
+    this.subscription = this.imgSelected.subscribe();
+    this.schematicForm.get('img.file').valueChanges.subscribe(
+      (imgFile) => {
+        const reader = new FileReader();
+        let src: string;
+        reader.onloadend = (event2: any) => {
+          src = reader.result;
+          this.imgSelected.next(src);
+        };
+        reader.readAsDataURL(imgFile);
+      }
+    );
     this.imgShown = this.imgSelected.pipe(
       map((imgUrl: string) => {
 
@@ -47,47 +56,37 @@ export class SchematicEditComponent implements OnInit, OnDestroy {
       }));
   }
 
-  toggleHover(event: boolean) { // Used for dropzone
-    this.isHovering = event;
-  }
-
-  onImageDrop(event: File) { // Sets image preview and temporaly stores img in variable
-    this.imgFile = event;
-    if (this.imgFile.type.split('/')[0] !== 'image') {
-      console.error('This is not an image!');
-      return;
-    }
-    this.schematicForm.patchValue({ imgFile: this.imgFile });
-    const reader = new FileReader();
-    let src: string;
-    reader.onloadend = (event2: any) => {
-      src = reader.result;
-      this.imgSelected.next(src);
-    };
-    reader.readAsDataURL(this.imgFile);
-  }
-
   onSubmit() { // Creates or updates Schematic based in editMode's  value
+    let imgFile: File;
+    let imgUrl: string;
+    if (this.schematicForm.get('img.file').value) {
+      imgFile = this.schematicForm.get('img.file').value;
+    } else {
+      imgUrl = this.schematicService.getSchematic(this.id).imgURL;
+    }
     if (this.editMode) {
+
       const newSchematic = new Schematic(
         this.schematicForm.value['name'],
         this.schematicForm.value['description'],
-        this.schematicService.getSchematic(this.id).imgURL,
+        imgUrl,
         this.schematicForm.value['elecComps'],
         this.schematicService.getSchematic(this.id).id,
-        this.imgFile
+        imgFile
       );
+      if (imgFile) {
+        this.schematicService.addImgToDelete(this.id);
+      }
       this.schematicService.updateSchematic(this.id, newSchematic);
     } else {
       const newSchematic = new Schematic(
         this.schematicForm.value['name'],
         this.schematicForm.value['description'],
-        null,
+        imgUrl,
         this.schematicForm.value['elecComps'],
         null,
-        this.imgFile
+        imgFile
       );
-
       this.schematicService.addSchematic(newSchematic);
     }
     this.onCancel();
@@ -119,6 +118,7 @@ export class SchematicEditComponent implements OnInit, OnDestroy {
     let _schematicDescription = '';
     let _schematicElecComps = new FormArray([]);
     let _schematicImgFile: File = null;
+    let _schematicImgURL = '';
 
     if (this.editMode) {
       const schematic = this.schematicService.getSchematic(this.id);
@@ -126,6 +126,7 @@ export class SchematicEditComponent implements OnInit, OnDestroy {
       _schematicImagePath = schematic.imgURL;
       _schematicDescription = schematic.description;
       _schematicImgFile = schematic.imgFile;
+      _schematicImgURL = schematic.imgURL;
       if (schematic['electronicComponents']) {
         for (let elecComp of schematic.electronicComponents) {
           _schematicElecComps.push(
@@ -143,9 +144,21 @@ export class SchematicEditComponent implements OnInit, OnDestroy {
     this.schematicForm = new FormGroup({
       'name': new FormControl(_schematicName, Validators.required),
       'description': new FormControl(_schematicDescription, Validators.required),
-      'imgFile': new FormControl(_schematicImgFile, Validators.required),
+      'img': new FormGroup({
+        'file': new FormControl(_schematicImgFile),
+        'url': new FormControl(_schematicImgURL)
+      }, [this.eitherImgFileOrUrlRequired]),
       'elecComps': _schematicElecComps
     });
+  }
+
+  eitherImgFileOrUrlRequired(group: FormGroup): { [s: string]: boolean } {
+    if (group) {
+      if (group.controls['file'].value || group.controls['url'].value) {
+        return null;
+      }
+    }
+    return { 'error': true };
   }
 
   ngOnDestroy() {
