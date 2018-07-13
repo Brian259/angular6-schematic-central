@@ -11,12 +11,12 @@
       
     </ul>
     <ul class="navbar-nav ml-auto">
-      <ng-template [ngIf]="!authService.isAuthenticated()">
+      <ng-template [ngIf]="!auth">
         <a class="nav-link" routerLink="/signup">Register</a>
         <a class="nav-link" routerLink="/signin">Login</a>
       </ng-template>
-      <a class="nav-link" style="cursor: pointer;" (click)="onLogout()" *ngIf="authService.isAuthenticated()">Logout</a>
-      <div ngbDropdown class="d-inline-block" *ngIf="authService.isAuthenticated()">
+      <a class="nav-link" style="cursor: pointer;" (click)="onLogout()" *ngIf="auth">Logout</a>
+      <div ngbDropdown class="d-inline-block" *ngIf="auth">
         <a class="nav-link" id="dropdownBasic1" ngbDropdownToggle style="cursor: pointer;">Manage</a>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="cursor: pointer;">
           <button class="dropdown-item" (click)="onSaveData()">Save Data</button>

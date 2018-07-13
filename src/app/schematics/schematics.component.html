@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-5">
-    <app-schematic-list  *ngIf="(schemsService.getSchematics() !== null)"></app-schematic-list>
+    <app-schematic-list  *ngIf="schems"></app-schematic-list>
   </div>
   <div class="col-md-7">
     <router-outlet></router-outlet>

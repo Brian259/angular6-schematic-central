@@ -9,7 +9,7 @@ export class HomeComponent implements OnInit {
   images: string[] = [
     'assets/1.jpg',
     'assets/4.png',
-    'assets/3.jpg'
+    'assets/3.png'
   ];
 
   constructor() { }

@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col">
-    <button *ngIf="authService.isAuthenticated()" class="btn btn-success" (click)="onNewSchematic()">New Schematic</button>
+    <button *ngIf="auth" class="btn btn-success" (click)="onNewSchematic()">New Schematic</button>
   </div>
   <div class="col">
       <div class="input-group mb-3">

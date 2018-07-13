@@ -13,4 +13,8 @@ export class SchematicsComponent implements OnInit {
   ngOnInit() {
   }
 
+  get schems() {
+    return this.schemsService.getSchematics();
+  }
+
 }

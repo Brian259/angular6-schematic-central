@@ -38,6 +38,10 @@ export class SchematicListComponent implements OnInit, OnDestroy {
     this.router.navigate(['new'], {relativeTo: this.route});
   }
 
+  get auth() {
+    return this.authService.isAuthenticated();
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }

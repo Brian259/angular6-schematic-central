@@ -12,7 +12,6 @@ export const environment = {
     storageBucket: 'schematic-shop.appspot.com',
     messagingSenderId: '158943268735'
   }
-
 };
 
 /*

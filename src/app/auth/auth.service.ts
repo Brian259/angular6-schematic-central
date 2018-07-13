@@ -9,9 +9,9 @@ export class AuthService {
   constructor(private router: Router) { }
 
   signupUser(email: string, password: string) {
-    firebase.auth().createUserWithEmailAndPassword(email, password)
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
       .catch(
-        error => console.log(error)
+        error => error.message
       );
   }
 
@@ -25,10 +25,10 @@ export class AuthService {
               (token: string) => this.token = token
             );
         }
-      )
-      .catch(
-        error => console.log(error)
       );
+      // .catch(
+      //   error => 
+      // );
   }
 
   logout() {

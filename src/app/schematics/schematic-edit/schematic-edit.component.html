@@ -10,7 +10,7 @@
       <div class="row">
         <div class="col">
           <div class="form-group">
-            <label for="name">Name</label>
+            <label for="name">Name*</label>
             <input type="text" id="name" formControlName="name" class="form-control">
           </div>
         </div>
@@ -18,47 +18,27 @@
       <div class="form-group" formGroupName="img">
         <div class="row">
           <div class="col">
-            <app-image-dropzone formControlName="file"></app-image-dropzone>
-            <!-- <label for="img">Image</label>
-              <div class="dropzone justify-content-between" appDropZone (hovered)="toggleHover($event)" (dropped)="onImageDrop($event)"
-              [class.hovering]="isHovering">
-              <h4>Drag and Drop Image Here</h4>
-              <div class="file">
-                <label class="file-label">
-                  <input class="file-input" type="file" (change)="onImageDrop($event.target.files[0])">
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fa fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                      or choose a file…
-                    </span>
-                  </span>
-                </label>
-              </div>
-            </div> -->
+            <app-image-dropzone formControlName="file" id="drop"></app-image-dropzone>
           </div>
         </div>
         <div class="row" *ngIf="(imgShown | async) as img">
           <div class="col">
-            
-              <label for="img">Preview</label>
-              <img [src]="img" id="img" class="img-responsive form-control-file">
-            
+            <label for="img">Preview</label>
+            <img [src]="img" id="img" class="img-responsive form-control-file">
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col">
           <div class="form-group">
-            <label for="description">Description</label>
+            <label for="description">Description*</label>
             <textarea type="text" id="description" class="form-control" formControlName="description" rows="6"></textarea>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col" formArrayName="elecComps">
-          <div class="row" *ngFor="let elecCompCtrl of schematicForm.get('elecComps').controls; let i = index" [formGroupName]="i"
+          <div class="row" *ngFor="let elecCompCtrl of schematicForm.get('elecComps.controls'); let i = index" [formGroupName]="i"
             style="margin-top: 10px;">
             <div class="col-xs-8">
               <input type="text" class="form-control" formControlName="name">
@@ -73,7 +53,7 @@
           <hr>
           <div class="row">
             <div class="col">
-              <button type="button" class="btn btn-success" (click)="onAddElectronicComponent()">Add ElectronicComponent</button>
+              <button type="button" class="btn btn-success" id="elec" (click)="onAddElectronicComponent()">Add Electronic Component</button>
             </div>
           </div>
         </div>

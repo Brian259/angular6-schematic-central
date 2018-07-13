@@ -1,4 +1,11 @@
-#To DO
+Simple webapp made for practicing angular
 
-store logging sesion
-change logging route to dropdown or popup
+https://schematic-shop.firebaseapp.com
+
+
+## To Do
+
+- **Finish LogIn/SignUp (token storage, cases when email already in use)**
+- **Make list pagination**
+- **Make better shopping list**
+- **Implement Ngrx**
